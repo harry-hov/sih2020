@@ -124,6 +124,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+            Container(
+              height: 30,
+            ),
+            Container(
+              child: Center(
+                child: Text(
+                  "© permission_denied",
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.w100,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              height: 20,
+            ),
           ],
         ),
       ),
