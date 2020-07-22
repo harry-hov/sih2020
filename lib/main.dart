@@ -29,6 +29,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    int count;
+    double grid1, grid2;
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
+      count = 2;
+      grid1 = 2.9;
+      grid2 = 1.8;
+    }
+    else {
+      count = 1;
+      grid1 = 1.8;
+      grid2 = 2.3;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -51,12 +63,66 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Welcome to Dashboard',
+            Container(
+              height: 10,
+            ),
+            Container(
+              child: GridView.count(
+                primary: false,
+                crossAxisCount: 1,
+                padding: const EdgeInsets.all(10.0),
+                childAspectRatio: grid1,
+                mainAxisSpacing: 2.0,
+                crossAxisSpacing: 2.0,
+                children: <Widget>[
+                  Container(
+                    child: Card(
+                      elevation:4,
+                      margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+                shrinkWrap: true,
+              )
+            ),
+            Container(
+              height: 10,
+            ),
+            Container(
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: <Widget>[
+                  GridView.count(
+                    primary: false,
+                    crossAxisCount: count,
+                    padding: const EdgeInsets.all(10.0),
+                    childAspectRatio: grid2,
+                    mainAxisSpacing: 2.0,
+                    crossAxisSpacing: 5.0,
+                    children: List.generate(20, (index) {
+                      return Container(
+                        child: Card(
+                          elevation: 4,
+                          margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          color: Colors.white,
+                        ),
+                      );
+                    }),
+                    shrinkWrap: true,
+                  )
+                ],
+              ),
             ),
           ],
         ),
