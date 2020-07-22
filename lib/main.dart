@@ -96,32 +96,26 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 10,
             ),
             Container(
-              child: ListView(
-                scrollDirection: Axis.vertical,
+              child: GridView.count(
+                primary: false,
+                crossAxisCount: count,
+                padding: const EdgeInsets.all(10.0),
+                childAspectRatio: grid2,
+                mainAxisSpacing: 2.0,
+                crossAxisSpacing: 5.0,
+                children: List.generate(20, (index) {
+                  return Container(
+                    child: Card(
+                      elevation: 4,
+                      margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      color: Colors.white,
+                    ),
+                  );
+                }),
                 shrinkWrap: true,
-                children: <Widget>[
-                  GridView.count(
-                    primary: false,
-                    crossAxisCount: count,
-                    padding: const EdgeInsets.all(10.0),
-                    childAspectRatio: grid2,
-                    mainAxisSpacing: 2.0,
-                    crossAxisSpacing: 5.0,
-                    children: List.generate(20, (index) {
-                      return Container(
-                        child: Card(
-                          elevation: 4,
-                          margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          color: Colors.white,
-                        ),
-                      );
-                    }),
-                    shrinkWrap: true,
-                  )
-                ],
               ),
             ),
             Container(
