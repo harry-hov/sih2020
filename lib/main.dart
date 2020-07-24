@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     int count;
     double grid1, grid2;
+    var data = [0.0, 1.0, 1.5, 2.0, 0.0, 0.0, -0.5, -1.0, -0.5, 0.0, 0.0];
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
       count = 2;
       grid1 = 2.9;
@@ -86,6 +88,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       color: Colors.white,
+                      child: new Container(
+                        margin: EdgeInsets.all(100.0),
+                        child: new Sparkline(
+                          data: data,
+                          lineWidth: 2.0,
+                          lineColor: Colors.green,
+                          pointsMode: PointsMode.all,
+                          pointSize:8.0,
+                        ),
+                      ),
                     ),
                   ),
                 ],
