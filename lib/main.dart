@@ -99,10 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       color: Colors.white,
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(30.0,50.0,50.0,30.0),
+                        padding: EdgeInsets.fromLTRB(30.0,20.0,50.0,30.0),
                         child: SfCartesianChart(
+                          title: ChartTitle(text: 'Real-Time Log Graph'),
+                          crosshairBehavior: CrosshairBehavior(enable:true),
+                          tooltipBehavior: TooltipBehavior(enable: true),
                           series: <ChartSeries>[
-                            LineSeries<Data, double>(
+                            FastLineSeries<Data, double>(
                                 dataSource: chartData,
                                 xValueMapper: (Data sales, _) => sales.date,
                                 yValueMapper: (Data sales, _) => sales.reqNo,
