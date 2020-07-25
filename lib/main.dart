@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:syncfusion_flutter_charts/charts.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -31,6 +31,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     int count;
     double grid1, grid2;
+    final List<Data> chartData = [
+            Data(2010, 35),
+            Data(2011, 10),
+            Data(2012, 34),
+            Data(2013, 32),
+            Data(2014, 50),
+            Data(2015, 70),
+            Data(2016, 30),
+            Data(2017, 100),
+            Data(2018, 30),
+            Data(2019, 29),
+        ];
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
       count = 2;
       grid1 = 2.9;
@@ -86,6 +98,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       color: Colors.white,
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(30.0,50.0,50.0,30.0),
+                        child: SfCartesianChart(
+                          series: <ChartSeries>[
+                            LineSeries<Data, double>(
+                                dataSource: chartData,
+                                xValueMapper: (Data sales, _) => sales.date,
+                                yValueMapper: (Data sales, _) => sales.reqNo,
+                            )
+                          ]
+                        )
+                      )
                     ),
                   ),
                 ],
@@ -141,4 +165,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class Data {
+  Data(this.date, this.reqNo);
+    final double date;
+    final double reqNo;
 }
