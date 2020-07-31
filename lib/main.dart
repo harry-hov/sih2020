@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -21,7 +22,6 @@ class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -31,18 +31,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     int count;
     double grid1, grid2;
-    final List<Data> chartData = [
-            Data("2018-01-13 01:00", 35),
-            Data("2018-01-14 01:00", 10),
-            Data("2018-01-15 01:00", 34),
-            Data("2018-01-16 01:00", 32),
-            Data("2018-01-17 01:00", 50),
-            Data("2018-01-18 01:00", 70),
-            Data("2018-01-19 01:00", 30),
-            Data("2018-01-20 01:00", 100),
-            Data("2018-01-21 01:00", 30),
-            Data("2018-01-22 01:00", 29),
-        ];
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
       count = 2;
       grid1 = 2.9;
@@ -102,46 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.white,  
                       child: Container(
                         padding: EdgeInsets.fromLTRB(30.0,20.0,50.0,30.0),
-                        child: SfCartesianChart(
-                          title: ChartTitle(text: 'Real-Time Log Graph',backgroundColor: Colors.blueGrey[100]),
-                          enableAxisAnimation: true,
-                          crosshairBehavior: CrosshairBehavior(enable:true),
-                          tooltipBehavior: TooltipBehavior(enable: true),
-                          zoomPanBehavior: ZoomPanBehavior(
-                            enableDoubleTapZooming: true,
-                          ),
-                          borderColor: Colors.black,
-                          borderWidth: 2,
-                          primaryXAxis: CategoryAxis(
-                            edgeLabelPlacement: EdgeLabelPlacement.shift,
-                            majorTickLines: MajorTickLines(
-                              color: Colors.black
-                            ),
-                          ),
-                          primaryYAxis: NumericAxis(
-                            majorTickLines: MajorTickLines(
-                               color: Colors.black
-                             ),
-                            title: AxisTitle(
-                                text: 'Number of HTTP requests',
-                                textStyle: TextStyle (
-                                  fontWeight: FontWeight.w700
-                                )
-                            )
-                          ),
-                          series: <ChartSeries>[
-                            FastLineSeries<Data,String>(
-                                dataSource: chartData,
-                                xValueMapper: (Data sales, _) => sales.date,
-                                yValueMapper: (Data sales, _) => sales.reqNo,
-                                animationDuration: 1000,
-                                markerSettings: MarkerSettings(
-                                    isVisible: true
-                                )
-                            )
-                          ]
-                        )
-                      )
+                         child: TimeSeriesRangeAnnotationMarginChart.withSampleData(),
+                      ),
                     ),
                   ),
                 ],
@@ -168,6 +118,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       color: Colors.white,
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(30.0,20.0,50.0,30.0),
+                         child: DonutAutoLabelChart.withSampleData(),
+                      ),
                     ),
                   );
                 }),
@@ -197,10 +151,133 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  
+}
+
+
+
+class TimeSeriesRangeAnnotationMarginChart extends StatelessWidget {
+  final List<charts.Series> seriesList;
+  final bool animate;
+
+  TimeSeriesRangeAnnotationMarginChart(this.seriesList, {this.animate});
+
+  factory TimeSeriesRangeAnnotationMarginChart.withSampleData() {
+    return new TimeSeriesRangeAnnotationMarginChart(
+      _createSampleData(),
+      animate: false,
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return new charts.TimeSeriesChart(
+      seriesList,
+      animate: animate,
+      layoutConfig: new charts.LayoutConfig(
+            leftMarginSpec: new charts.MarginSpec.fixedPixel(60),
+            topMarginSpec: new charts.MarginSpec.fixedPixel(20),
+            rightMarginSpec: new charts.MarginSpec.fixedPixel(60),
+            bottomMarginSpec: new charts.MarginSpec.fixedPixel(20)),
+        behaviors: [
+          new charts.RangeAnnotation([
+            new charts.RangeAnnotationSegment(
+                new DateTime(2017, 10, 4),
+                new DateTime(2017, 10, 15),
+                charts.RangeAnnotationAxisType.domain,
+                startLabel: 'D1 Start',
+                endLabel: 'D1 End',
+                labelAnchor: charts.AnnotationLabelAnchor.end,
+                color: charts.MaterialPalette.gray.shade200,
+                labelDirection: charts.AnnotationLabelDirection.horizontal),
+            new charts.RangeAnnotationSegment(
+                15, 20, charts.RangeAnnotationAxisType.measure,
+                startLabel: 'M1 Start',
+                endLabel: 'M1 End',
+                labelAnchor: charts.AnnotationLabelAnchor.end,
+                color: charts.MaterialPalette.gray.shade300),
+            new charts.RangeAnnotationSegment(
+                35, 65, charts.RangeAnnotationAxisType.measure,
+                startLabel: 'M2 Start',
+                endLabel: 'M2 End',
+                labelAnchor: charts.AnnotationLabelAnchor.start,
+                color: charts.MaterialPalette.gray.shade300),
+          ], defaultLabelPosition: charts.AnnotationLabelPosition.margin),
+        ]);
+  }
+  static List<charts.Series<Data, DateTime>> _createSampleData() {
+    final data = [
+      new Data(new DateTime(2017, 9, 19), 5),
+      new Data(new DateTime(2017, 9, 26), 25),
+      new Data(new DateTime(2017, 10, 3), 100),
+      new Data(new DateTime(2017, 10, 10), 75),
+    ];
+
+    return [
+      new charts.Series<Data, DateTime>(
+        id: 'noOf',
+        colorFn: (_, __) => charts.MaterialPalette.teal.shadeDefault,
+        domainFn: (Data noOf, _) => noOf.date,
+        measureFn: (Data noOf, _) => noOf.reqNo,
+        data: data,
+      )
+    ];
+  }
+}
+
+class DonutAutoLabelChart extends StatelessWidget {
+  final List<charts.Series> seriesList;
+  final bool animate;
+
+  DonutAutoLabelChart(this.seriesList, {this.animate});
+
+  factory DonutAutoLabelChart.withSampleData() {
+    return new DonutAutoLabelChart(
+      _createSampleData(),
+      animate: false,
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return new charts.PieChart(seriesList,
+        animate: animate,
+        defaultRenderer: new charts.ArcRendererConfig(
+            arcWidth: 30,
+            arcRendererDecorators: [new charts.ArcLabelDecorator()]));
+  }
+  static List<charts.Series<PieData, String>> _createSampleData() {
+    final data = [
+      new PieData('127.0.0.1', 190742),
+      new PieData('10.0.3.78', 109933),
+      new PieData('158.227.105.27', 79925),
+      new PieData('10.0.11.18', 31311),
+    ];
+
+    return [
+      new charts.Series<PieData, String>(
+        id: 'noOfReq',
+        colorFn: (_, __) => charts.MaterialPalette.teal.shadeDefault,
+        domainFn: (PieData noOfReq, _) => noOfReq.clientIP,
+        measureFn: (PieData noOfReq, _) => noOfReq.noOfReq,
+        data: data,
+        labelAccessorFn: (PieData row, _) => '${row.clientIP}: ${row.noOfReq}',
+      )
+    ];
+  }
 }
 
 class Data {
   Data(this.date, this.reqNo);
-    final String date;
-    final double reqNo;
+    final DateTime date;
+    final int reqNo;
 }
+
+class PieData {
+  final String clientIP;
+  final int noOfReq;
+  PieData(this.clientIP, this.noOfReq);
+}
+
