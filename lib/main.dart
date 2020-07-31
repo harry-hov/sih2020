@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Server Logs | Dashboard',
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Server Logs | Dashboard'),
     );
@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Colors.blue,
       ),
       drawer: Drawer(
         child: ListView(
@@ -89,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       color: Colors.white,  
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(30.0,20.0,50.0,30.0),
+                        padding: EdgeInsets.fromLTRB(30.0,20.0,20.0,30.0),
                          child: TimeSeriesRangeAnnotationMarginChart.withSampleData(),
                       ),
                     ),
@@ -109,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 childAspectRatio: grid2,
                 mainAxisSpacing: 2.0,
                 crossAxisSpacing: 5.0,
-                children: List.generate(20, (index) {
+                children: List.generate(2, (index) {
                   return Container(
                     child: Card(
                       elevation: 4,
@@ -119,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       color: Colors.white,
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(30.0,20.0,50.0,30.0),
+                        padding: EdgeInsets.fromLTRB(30.0,20.0,20.0,30.0),
                          child: DonutAutoLabelChart.withSampleData(),
                       ),
                     ),
@@ -175,6 +176,7 @@ class TimeSeriesRangeAnnotationMarginChart extends StatelessWidget {
     return new charts.TimeSeriesChart(
       seriesList,
       animate: animate,
+      defaultRenderer: new charts.LineRendererConfig(includePoints: true),
       layoutConfig: new charts.LayoutConfig(
             leftMarginSpec: new charts.MarginSpec.fixedPixel(60),
             topMarginSpec: new charts.MarginSpec.fixedPixel(20),
@@ -183,27 +185,33 @@ class TimeSeriesRangeAnnotationMarginChart extends StatelessWidget {
         behaviors: [
           new charts.RangeAnnotation([
             new charts.RangeAnnotationSegment(
-                new DateTime(2017, 10, 4),
-                new DateTime(2017, 10, 15),
-                charts.RangeAnnotationAxisType.domain,
-                startLabel: 'D1 Start',
-                endLabel: 'D1 End',
-                labelAnchor: charts.AnnotationLabelAnchor.end,
-                color: charts.MaterialPalette.gray.shade200,
-                labelDirection: charts.AnnotationLabelDirection.horizontal),
-            new charts.RangeAnnotationSegment(
-                15, 20, charts.RangeAnnotationAxisType.measure,
-                startLabel: 'M1 Start',
-                endLabel: 'M1 End',
-                labelAnchor: charts.AnnotationLabelAnchor.end,
-                color: charts.MaterialPalette.gray.shade300),
-            new charts.RangeAnnotationSegment(
                 35, 65, charts.RangeAnnotationAxisType.measure,
                 startLabel: 'M2 Start',
                 endLabel: 'M2 End',
                 labelAnchor: charts.AnnotationLabelAnchor.start,
                 color: charts.MaterialPalette.gray.shade300),
           ], defaultLabelPosition: charts.AnnotationLabelPosition.margin),
+
+          new charts.LinePointHighlighter(
+            showHorizontalFollowLine:
+              charts.LinePointHighlighterFollowLineType.none,
+            showVerticalFollowLine:
+              charts.LinePointHighlighterFollowLineType.nearest),
+          new charts.SelectNearest(eventTrigger: charts.SelectionTrigger.tapAndDrag),
+        
+          new charts.ChartTitle('Real-Time Log Graph',
+            behaviorPosition: charts.BehaviorPosition.top,
+            titleOutsideJustification: charts.OutsideJustification.start,
+            innerPadding: 20),
+          new charts.ChartTitle('Date',
+            behaviorPosition: charts.BehaviorPosition.bottom,
+            titleOutsideJustification:
+                charts.OutsideJustification.middleDrawArea,innerPadding: 20),
+          new charts.ChartTitle('Number of HTTP requests',
+            behaviorPosition: charts.BehaviorPosition.start,
+            titleOutsideJustification:
+                charts.OutsideJustification.middleDrawArea,outerPadding: 70),
+        
         ]);
   }
   static List<charts.Series<Data, DateTime>> _createSampleData() {
@@ -216,8 +224,8 @@ class TimeSeriesRangeAnnotationMarginChart extends StatelessWidget {
 
     return [
       new charts.Series<Data, DateTime>(
-        id: 'noOf',
-        colorFn: (_, __) => charts.MaterialPalette.teal.shadeDefault,
+        id: 'noOfReq',
+       // colorFn: (_, __) => charts.MaterialPalette.black,
         domainFn: (Data noOf, _) => noOf.date,
         measureFn: (Data noOf, _) => noOf.reqNo,
         data: data,
@@ -244,8 +252,20 @@ class DonutAutoLabelChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return new charts.PieChart(seriesList,
         animate: animate,
+        behaviors: [
+        new charts.DatumLegend(
+          position: charts.BehaviorPosition.end,
+          horizontalFirst: false,
+          cellPadding: new EdgeInsets.only(bottom: 4.0),
+          showMeasures: true,
+          legendDefaultMeasure: charts.LegendDefaultMeasure.firstValue,
+          measureFormatter: (num value) {
+            return value == null ? '-' : '${value}Requests';
+          },
+        ),
+      ],
         defaultRenderer: new charts.ArcRendererConfig(
-            arcWidth: 30,
+            arcWidth: 50,
             arcRendererDecorators: [new charts.ArcLabelDecorator()]));
   }
   static List<charts.Series<PieData, String>> _createSampleData() {
@@ -259,7 +279,7 @@ class DonutAutoLabelChart extends StatelessWidget {
     return [
       new charts.Series<PieData, String>(
         id: 'noOfReq',
-        colorFn: (_, __) => charts.MaterialPalette.teal.shadeDefault,
+       // colorFn: (_, __) => charts.MaterialPalette.blue,
         domainFn: (PieData noOfReq, _) => noOfReq.clientIP,
         measureFn: (PieData noOfReq, _) => noOfReq.noOfReq,
         data: data,
